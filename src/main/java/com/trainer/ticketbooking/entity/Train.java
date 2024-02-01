@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -13,14 +16,17 @@ import lombok.Setter;
 public class Train {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Column(name = "train_id", nullable = false)
+    private Long trainID;
 
-    @OneToOne(optional = false, orphanRemoval = true)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "departure_station_id", nullable = false)
     private Station departureStation;
 
-    @OneToOne(optional = false, orphanRemoval = true)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "arrival_station_id", nullable = false)
     private Station arrivalStation;
+
+    @OneToMany(mappedBy = "train", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Ticket> tickets = new ArrayList<>();
 }

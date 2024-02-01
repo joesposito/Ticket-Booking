@@ -10,11 +10,11 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "local_user")
-public class User {
+public class LocalUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Column(name = "user_id", nullable = false)
+    private Long userID;
 
     @Column(name = "username", nullable = false, unique = true, length = 320)
     private String username;
@@ -28,7 +28,7 @@ public class User {
     @Column(name = "last_name", nullable = false, length = 35)
     private String lastName;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToOne(optional = false, orphanRemoval = true)
+    @JoinColumn(name = "address_id", nullable = false)
     private Address address;
-
 }

@@ -13,13 +13,13 @@ import lombok.Setter;
 public class Station {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Column(name = "station_id", nullable = false)
+    private Long stationID;
 
     @Column(name = "name", nullable = false, length = 512)
     private String name;
 
     @OneToOne(optional = false, orphanRemoval = true)
-    @JoinColumn(name = "address_id", nullable = false, unique = true)
+    @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 }

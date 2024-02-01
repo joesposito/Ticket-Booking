@@ -13,10 +13,17 @@ import lombok.Setter;
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Column(name = "ticket_id", nullable = false)
+    private Long ticketID;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "train_id", nullable = false)
     private Train train;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "seat_class", nullable = false, length = 50)
+    private SeatClass seatClass;
+
+    @Column(name = "seat_number", nullable = false, unique = true)
+    private Integer seatNumber;
 }
