@@ -22,4 +22,13 @@ public class Station {
     @OneToOne(optional = false, orphanRemoval = true)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "stationID=" + stationID +
+                ", name='" + name + '\'' +
+                ", address=" + address +
+                '}';
+    }
 }

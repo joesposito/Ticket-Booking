@@ -30,4 +30,16 @@ public class Address {
 
     @Column(name = "postal_code", nullable = false, length = 16)
     private String postal_code;
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "addressID=" + addressID +
+                ", addressLine1='" + addressLine1 + '\'' +
+                ", addressLine2='" + addressLine2 + '\'' +
+                ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                ", postal_code='" + postal_code + '\'' +
+                '}';
+    }
 }

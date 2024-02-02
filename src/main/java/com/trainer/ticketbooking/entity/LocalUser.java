@@ -31,4 +31,16 @@ public class LocalUser {
     @OneToOne(optional = false, orphanRemoval = true)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
+
+    @Override
+    public String toString() {
+        return "LocalUser{" +
+                "userID=" + userID +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", address=" + address +
+                '}';
+    }
 }
