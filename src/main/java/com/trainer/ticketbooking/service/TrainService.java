@@ -5,12 +5,12 @@ import com.trainer.ticketbooking.dao.TrainDao;
 import com.trainer.ticketbooking.entity.Station;
 import com.trainer.ticketbooking.entity.Train;
 import com.trainer.ticketbooking.dto.TrainDto;
-import com.trainer.ticketbooking.mapper.TrainMapper;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -18,9 +18,6 @@ import java.util.Optional;
 public class TrainService {
     private TrainDao trainDao;
     private StationDao stationDao;
-
-    @Autowired
-    TrainMapper trainMapper;
 
 
     public TrainService(TrainDao trainDao, StationDao stationDao){
@@ -42,11 +39,11 @@ public class TrainService {
 
         //if either station does not exist, we throw an exception
         if(departureStation.isEmpty()){
-             throw new IllegalArgumentException();
+             throw new EntityNotFoundException();
         }
 
         if(arrivalStation.isEmpty()){
-            throw new IllegalArgumentException();
+            throw new EntityNotFoundException();
         }
 
         newTrain.setDepartureStation(departureStation.get());
@@ -64,6 +61,28 @@ public class TrainService {
         }
 
         return train.get();
+    }
+
+    //update train in db
+    @Transactional
+    public Train updateTrain(long trainID, TrainDto trainDto) throws EntityNotFoundException {
+        Optional<Train> train = trainDao.findByTrainID(trainID);
+
+        if(train.isEmpty()){
+            throw new EntityNotFoundException("Train does not exist.");
+        }
+
+        Train trainEntity = train.get();
+
+        try {
+            trainEntity.setDepartureStation(stationDao.findByStationID(trainDto.getDepartureStationID()).get());
+            trainEntity.setArrivalStation(stationDao.findByStationID(trainDto.getArrivalStationID()).get());
+        }catch(NoSuchElementException e){
+            throw new EntityNotFoundException("One or more stations do not exist.");
+        }
+
+        trainDao.save(trainEntity);
+        return trainEntity;
     }
 
     //delete train from db

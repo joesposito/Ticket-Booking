@@ -42,6 +42,16 @@ public class TrainController {
         }
     }
 
+    @PatchMapping("/update-train/{trainID}")
+    public void updateTrain(@PathVariable long trainID, @RequestBody TrainDto trainDto){
+        try {
+            trainService.updateTrain(trainID, trainDto);
+            log.info("Train successfully updated with ID: {}", trainID);
+        }catch(EntityNotFoundException e){
+            log.error(String.valueOf(e));
+        }
+    }
+
     //Deletes train object using a train ID in the request path
     @DeleteMapping("/delete-train/{trainID}")
     public void deleteTrain(@PathVariable long trainID){
