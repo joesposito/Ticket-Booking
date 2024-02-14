@@ -39,6 +39,16 @@ public class UserController {
         }
     }
 
+    @PatchMapping("/update-user/{userID}")
+    public void updateTrain(@PathVariable long userID, @RequestBody LocalUserDto localUserDto){
+        try {
+            userService.updateUser(userID, localUserDto);
+            log.info("User successfully updated with ID: {}", userID);
+        }catch(EntityNotFoundException e){
+            log.error(String.valueOf(e));
+        }
+    }
+
     //Deletes user object using a user ID in the request path
     @DeleteMapping("/delete-user/{userID}")
     public void deleteUser(@PathVariable long userID){

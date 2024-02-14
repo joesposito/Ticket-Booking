@@ -64,7 +64,6 @@ public class TrainService {
     }
 
     //update train in db
-    @Transactional
     public Train updateTrain(long trainID, TrainDto trainDto) throws EntityNotFoundException {
         Optional<Train> train = trainDao.findByTrainID(trainID);
 
