@@ -19,14 +19,24 @@ public class Train {
     @Column(name = "train_id", nullable = false)
     private Long trainID;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(cascade = CascadeType.MERGE, optional = false)
     @JoinColumn(name = "departure_station_id", nullable = false)
     private Station departureStation;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(cascade = CascadeType.MERGE, optional = false)
     @JoinColumn(name = "arrival_station_id", nullable = false)
     private Station arrivalStation;
 
     @OneToMany(mappedBy = "train", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Ticket> tickets = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Train{" +
+                "trainID=" + trainID +
+                ", departureStation=" + departureStation +
+                ", arrivalStation=" + arrivalStation +
+                ", tickets=" + tickets +
+                '}';
+    }
 }

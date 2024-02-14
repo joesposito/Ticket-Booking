@@ -20,8 +20,14 @@ public class AddressService {
 
     //create address object using local user data
     public Address createUserAddress(LocalUserDto localUserDto){
+        if(localUserDto.getAddressLine1() == null || localUserDto.getCity() == null
+                || localUserDto.getCountry() == null || localUserDto.getPostalCode() == null){
+            return null;
+        }
+
         Address address = new Address();
         address.setAddressLine1(localUserDto.getAddressLine1());
+        address.setAddressLine2(localUserDto.getAddressLine2());
         address.setCity(localUserDto.getCity());
         address.setCountry(localUserDto.getCountry());
         address.setPostal_code(localUserDto.getPostalCode());
@@ -30,6 +36,11 @@ public class AddressService {
 
     //create station address using station data
     public Address createStationAddress(StationCreateDto stationCreateDto){
+        if(stationCreateDto.getAddressLine1() == null || stationCreateDto.getCity() == null
+                || stationCreateDto.getCountry() == null || stationCreateDto.getPostalCode() == null){
+            return null;
+        }
+
         Address address = new Address();
         address.setAddressLine1(stationCreateDto.getAddressLine1());
         address.setCity(stationCreateDto.getCity());

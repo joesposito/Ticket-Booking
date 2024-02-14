@@ -11,4 +11,5 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface TrainMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateTrainFromDto(TrainDto dto, @MappingTarget Train train);
+
 }
