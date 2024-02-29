@@ -1,4 +1,4 @@
-package com.trainer.ticketbooking.dao;
+package com.trainer.ticketbooking.repo;
 import com.trainer.ticketbooking.entity.Train;
 import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;

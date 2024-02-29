@@ -18,16 +18,16 @@ public class LocalUserDto {
 
     @Override
     public String toString() {
-        return "RegistrationBody{" +
+        return "LocalUserDto{" +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", addressLine1='" + addressLine1 + '\'' +
+                ", addressLine2='" + addressLine2 + '\'' +
                 ", city='" + city + '\'' +
                 ", country='" + country + '\'' +
                 ", postalCode='" + postalCode + '\'' +
                 '}';
     }
-
 }
