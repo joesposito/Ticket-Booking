@@ -28,8 +28,8 @@ public class Address {
     @Column(name = "country", nullable = false, length = 100)
     private String country;
 
-    @Column(name = "postal_code", nullable = false, length = 16)
-    private String postal_code;
+    @Column(name = "postalCode", nullable = false, length = 16)
+    private String postalCode;
 
     @Override
     public String toString() {
@@ -39,7 +39,7 @@ public class Address {
                 ", addressLine2='" + addressLine2 + '\'' +
                 ", city='" + city + '\'' +
                 ", country='" + country + '\'' +
-                ", postal_code='" + postal_code + '\'' +
+                ", postal_code='" + postalCode + '\'' +
                 '}';
     }
 }

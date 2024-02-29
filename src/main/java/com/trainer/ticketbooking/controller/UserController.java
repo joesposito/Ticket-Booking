@@ -7,56 +7,63 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @Slf4j
 public class UserController {
-    @Autowired
-    UserService userService;
+    private final UserService userService;
+    public UserController(UserService userService){
+        this.userService = userService;
+    }
 
     //Creates user using request body information
-    @PostMapping("/create-user")
+    @PostMapping("/user")
     public void createUser(@RequestBody LocalUserDto localUserDto){
         try {
             userService.createUser(localUserDto);
             log.info("New user registered with username: {}", localUserDto.getUsername());
-        }catch(EntityExistsException e){
-            log.error("Username already exists: {}", localUserDto.getUsername());
+        }catch(IllegalArgumentException | NullPointerException e){
+            log.error(String.valueOf(e));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 
     //Gets user object using a user ID in the request path
-    @GetMapping("/get-user/{userID}")
+    @GetMapping("/user/{userID}")
     public LocalUser getUser(@PathVariable long userID){
         try {
             LocalUser user = userService.getUser(userID);
             log.info("User successfully retrieved with ID: {}", userID);
             return user;
-        }catch(EntityNotFoundException e){
-            log.error("User ID does not exist: {}", userID);
-            return null;
+        }catch(NullPointerException e){
+            log.error(String.valueOf(e));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PatchMapping("/update-user/{userID}")
-    public void updateTrain(@PathVariable long userID, @RequestBody LocalUserDto localUserDto){
+    @PatchMapping("/user/{userID}")
+    public void updateUser(@PathVariable long userID, @RequestBody LocalUserDto localUserDto){
         try {
             userService.updateUser(userID, localUserDto);
             log.info("User successfully updated with ID: {}", userID);
-        }catch(EntityNotFoundException e){
+        }catch(NullPointerException e){
             log.error(String.valueOf(e));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 
     //Deletes user object using a user ID in the request path
-    @DeleteMapping("/delete-user/{userID}")
+    @DeleteMapping("/user/{userID}")
     public void deleteUser(@PathVariable long userID){
         try {
             userService.deleteUser(userID);
             log.info("user successfully deleted with ID: {}", userID);
-        }catch(EntityNotFoundException e){
-            log.error("user ID does not exist: {}", userID);
+        }catch(NullPointerException e){
+            log.error(String.valueOf(e));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 }

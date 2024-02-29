@@ -1,9 +1,9 @@
-package com.trainer.ticketbooking.dao;
+package com.trainer.ticketbooking.repo;
 
 import com.trainer.ticketbooking.entity.Address;
 import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 
-public interface AddressDao extends CrudRepository<Address, Long> {
+public interface AddressRepo extends CrudRepository<Address, Long> {
     Optional<Address> findByAddressID(long addressID);
 }

@@ -22,7 +22,7 @@ public class Train {
     @ManyToOne(cascade = CascadeType.MERGE, optional = false)
     @JoinColumn(name = "departure_station_id", nullable = false)
     private Station departureStation;
-
+    
     @ManyToOne(cascade = CascadeType.MERGE, optional = false)
     @JoinColumn(name = "arrival_station_id", nullable = false)
     private Station arrivalStation;
