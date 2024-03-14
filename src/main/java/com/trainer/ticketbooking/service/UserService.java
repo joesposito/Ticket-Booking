@@ -1,19 +1,17 @@
 package com.trainer.ticketbooking.service;
 
+import com.trainer.ticketbooking.dto.LocalUserResponseDto;
 import com.trainer.ticketbooking.mapper.AddressMapper;
 import com.trainer.ticketbooking.mapper.LocalUserMapper;
 import com.trainer.ticketbooking.repo.AddressRepo;
 import com.trainer.ticketbooking.repo.LocalUserRepo;
 import com.trainer.ticketbooking.entity.Address;
 import com.trainer.ticketbooking.entity.LocalUser;
-import com.trainer.ticketbooking.dto.LocalUserDto;
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.trainer.ticketbooking.dto.LocalUserRequestDto;
+
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -35,50 +33,50 @@ public class UserService {
     }
 
     //create user and put it in db
-    public LocalUser createUser(LocalUserDto localUserDto) {
-        if(localUserRepo.findByUsernameIgnoreCase(localUserDto.getUsername()).isPresent()) {
+    public LocalUserResponseDto createUser(LocalUserRequestDto localUserRequestDto) {
+        if(localUserRepo.findByUsernameIgnoreCase(localUserRequestDto.getUsername()).isPresent()) {
             throw new IllegalArgumentException
-                    ("User with username \"" + localUserDto.getUsername() + "\" already exists.");
+                    ("User with username \"" + localUserRequestDto.getUsername() + "\" already exists.");
         }
 
         //address service will throw NPE is any data is missing
-        Address address = addressService.createUserAddress(localUserDto);
-        LocalUser newUser = localUserMapper.dtoToLocalUser(localUserDto);
+        Address address = addressService.createUserAddress(localUserRequestDto);
+        LocalUser newUser = localUserMapper.dtoToLocalUser(localUserRequestDto);
         newUser.setAddress(address);
 
         localUserRepo.save(newUser);
-        return newUser;
+        return localUserMapper.localUserToDto(newUser);
     }
 
     //get user and put it in db
-    public LocalUser getUser(Long userID) {
+    public LocalUserResponseDto getUser(Long userID) {
         Optional<LocalUser> localUser = localUserRepo.findByUserID(userID);
 
         if(localUser.isEmpty()){
             throw new NullPointerException("User with ID \"" + userID + "\" does not exist.");
         }
 
-        return localUser.get();
+        return localUserMapper.localUserToDto(localUser.get());
     }
 
-    public LocalUser updateUser(long userID, LocalUserDto localUserDto) {
-        Optional<LocalUser> localUser = localUserRepo.findByUserID(userID);
+    public LocalUserResponseDto updateUser(long userID, LocalUserRequestDto localUserRequestDto) {
+        Optional<LocalUser> optionalLocalUser = localUserRepo.findByUserID(userID);
 
-        if(localUser.isEmpty()){
+        if(optionalLocalUser.isEmpty()){
             throw new NullPointerException("User with ID \"" + userID + "\" does not exist.");
         }
 
-        LocalUser localUserEntity = localUser.get();
-        Address address = localUserEntity.getAddress();
+        LocalUser localUser = optionalLocalUser.get();
+        Address address = localUser.getAddress();
 
-        localUserMapper.updateLocalUserFromDto(localUserDto, localUserEntity);
+        localUserMapper.updateLocalUserFromDto(localUserRequestDto, localUser);
         //take the address and update all of its components using overloaded update method
-        addressMapper.updateAddressFromDto(localUserDto, address);
+        addressMapper.updateAddressFromDto(localUserRequestDto, address);
 
         //save both components
         addressRepo.save(address);
-        localUserRepo.save(localUserEntity);
-        return localUserEntity;
+        localUserRepo.save(localUser);
+        return localUserMapper.localUserToDto(localUser);
     }
 
 

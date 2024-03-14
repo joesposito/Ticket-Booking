@@ -5,18 +5,20 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class AddressDto {
+public class StationResponseDto {
+
+    private long stationID;
+    private String name;
     private String addressLine1;
-    private String addressLine2;
     private String city;
     private String country;
     private String postalCode;
 
     @Override
     public String toString() {
-        return "AddressDto{" +
-                "addressLine1='" + addressLine1 + '\'' +
-                ", addressLine2='" + addressLine2 + '\'' +
+        return "StationRegistrationBody{" +
+                "name='" + name + '\'' +
+                ", addressLine1='" + addressLine1 + '\'' +
                 ", city='" + city + '\'' +
                 ", country='" + country + '\'' +
                 ", postalCode='" + postalCode + '\'' +

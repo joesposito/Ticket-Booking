@@ -1,13 +1,10 @@
 package com.trainer.ticketbooking.service;
 
-import com.trainer.ticketbooking.dto.AddressDto;
 import com.trainer.ticketbooking.entity.Address;
-import com.trainer.ticketbooking.dto.LocalUserDto;
-import com.trainer.ticketbooking.dto.StationCreateDto;
+import com.trainer.ticketbooking.dto.LocalUserRequestDto;
+import com.trainer.ticketbooking.dto.StationRequestDto;
 import com.trainer.ticketbooking.mapper.AddressMapper;
 import com.trainer.ticketbooking.repo.AddressRepo;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -23,28 +20,25 @@ public class AddressService {
     }
 
     //create address object using local user data
-    public Address createUserAddress(LocalUserDto localUserDto){
-        if(localUserDto.getAddressLine1() == null || localUserDto.getCity() == null
-                || localUserDto.getCountry() == null || localUserDto.getPostalCode() == null){
+    public Address createUserAddress(LocalUserRequestDto localUserRequestDto){
+        if(localUserRequestDto.getAddressLine1() == null || localUserRequestDto.getCity() == null
+                || localUserRequestDto.getCountry() == null || localUserRequestDto.getPostalCode() == null){
             throw new IllegalArgumentException("Could not create address: missing data.");
         }
 
-        Address address = addressMapper.dtoToAddress(localUserDto);
-        System.out.println("adres" + address);
+        Address address = addressMapper.dtoToAddress(localUserRequestDto);
         addressRepo.save(address);
-        System.out.println(address);
-        System.out.println("HERE2!");
         return address;
     }
 
     //create station address using station data
-    public Address createStationAddress(StationCreateDto stationCreateDto){
-        if(stationCreateDto.getAddressLine1() == null || stationCreateDto.getCity() == null
-                || stationCreateDto.getCountry() == null || stationCreateDto.getPostalCode() == null){
+    public Address createStationAddress(StationRequestDto stationRequestDto){
+        if(stationRequestDto.getAddressLine1() == null || stationRequestDto.getCity() == null
+                || stationRequestDto.getCountry() == null || stationRequestDto.getPostalCode() == null){
             throw new IllegalArgumentException("Could not create address: missing data.");
         }
 
-        Address address = addressMapper.dtoToAddress(stationCreateDto);
+        Address address = addressMapper.dtoToAddress(stationRequestDto);
         addressRepo.save(address);
         return address;
     }

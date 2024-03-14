@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 
 
-public interface TrainDao extends CrudRepository<Train, Long> {
+public interface TrainRepo extends CrudRepository<Train, Long> {
     Optional<Train> findByTrainID(Long trainID);
 }

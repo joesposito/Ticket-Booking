@@ -2,7 +2,7 @@ package com.trainer.ticketbooking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trainer.ticketbooking.controller.UserController;
-import com.trainer.ticketbooking.dto.LocalUserDto;
+import com.trainer.ticketbooking.dto.LocalUserRequestDto;
 import com.trainer.ticketbooking.entity.LocalUser;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,16 +36,16 @@ public class UserControllerAPITests {
 
     @Test
     public void createUser200Test() throws Exception{
-        LocalUserDto localUserDto = new LocalUserDto();
-        localUserDto.setFirstName("FName");
-        localUserDto.setLastName("LName");
-        localUserDto.setAddressLine1("Address1");
-        localUserDto.setAddressLine2("Address2");
-        localUserDto.setCity("City");
-        localUserDto.setCountry("Country");
-        localUserDto.setPostalCode("12345");
+        LocalUserRequestDto localUserRequestDto = new LocalUserRequestDto();
+        localUserRequestDto.setFirstName("FName");
+        localUserRequestDto.setLastName("LName");
+        localUserRequestDto.setAddressLine1("Address1");
+        localUserRequestDto.setAddressLine2("Address2");
+        localUserRequestDto.setCity("City");
+        localUserRequestDto.setCountry("Country");
+        localUserRequestDto.setPostalCode("12345");
 
-        String requestBody = objectMapper.writeValueAsString(localUserDto);
+        String requestBody = objectMapper.writeValueAsString(localUserRequestDto);
         System.out.println(requestBody);
         mockMvc.perform(post("/user").contentType("application/json")
                         .content(requestBody))

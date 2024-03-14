@@ -1,13 +1,14 @@
 package com.trainer.ticketbooking.controller;
 
-import com.trainer.ticketbooking.dto.StationCreateDto;
+import com.trainer.ticketbooking.dto.StationRequestDto;
+import com.trainer.ticketbooking.dto.StationResponseDto;
+import com.trainer.ticketbooking.dto.TicketRequestDto;
+import com.trainer.ticketbooking.dto.TicketResponseDto;
 import com.trainer.ticketbooking.entity.Station;
 import com.trainer.ticketbooking.service.StationService;
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,10 +22,11 @@ public class StationController {
 
     //Creates station using request body
     @PostMapping("/station")
-    public void createStation(@RequestBody StationCreateDto stationCreateDto){
+    public ResponseEntity<StationResponseDto> createStation(@RequestBody StationRequestDto stationRequestDto){
         try {
-            stationService.createStation(stationCreateDto);
-            log.info("New station registered with name: {}", stationCreateDto.getName());
+            StationResponseDto stationResponseDto = stationService.createStation(stationRequestDto);
+            log.info("New station registered with name: {}", stationRequestDto.getName());
+            return new ResponseEntity<>(stationResponseDto, HttpStatus.CREATED);
         }catch(IllegalArgumentException | NullPointerException e){
             log.error(String.valueOf(e));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -33,11 +35,24 @@ public class StationController {
 
     //Gets station object using a station ID in the request path
     @GetMapping("/station/{stationID}")
-    public Station getStation(@PathVariable long stationID){
+    public ResponseEntity<StationResponseDto> getStation(@PathVariable long stationID){
         try {
-            Station station = stationService.getStation(stationID);
+            StationResponseDto stationResponseDto = stationService.getStation(stationID);
             log.info("Station successfully retrieved with ID: {}", stationID);
-            return station;
+            return new ResponseEntity<>(stationResponseDto, HttpStatus.OK);
+        }catch(NullPointerException e){
+            log.error(String.valueOf(e));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PatchMapping("/station/{stationID}")
+    public ResponseEntity<StationResponseDto> updateStation(@PathVariable long stationID,
+                                                            @RequestBody StationRequestDto stationRequestDto){
+        try{
+            StationResponseDto stationResponseDto = stationService.updateStation(stationID, stationRequestDto);
+            log.info("Station successfully updated with ID: {}", stationID);
+            return new ResponseEntity<>(stationResponseDto, HttpStatus.OK);
         }catch(NullPointerException e){
             log.error(String.valueOf(e));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -46,7 +61,7 @@ public class StationController {
 
     //Deletes station object using a station ID in the request path
     @DeleteMapping("/station/{stationID}")
-    public void deleteTrain(@PathVariable long stationID){
+    public void deleteStation(@PathVariable long stationID){
         try {
             stationService.deleteStation(stationID);
             log.info("Station successfully deleted with ID: {}", stationID);

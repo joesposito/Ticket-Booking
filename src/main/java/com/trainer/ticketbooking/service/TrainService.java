@@ -1,14 +1,14 @@
 package com.trainer.ticketbooking.service;
 
+import com.trainer.ticketbooking.dto.TrainResponseDto;
+import com.trainer.ticketbooking.mapper.TrainMapper;
 import com.trainer.ticketbooking.repo.StationRepo;
-import com.trainer.ticketbooking.repo.TrainDao;
+import com.trainer.ticketbooking.repo.TrainRepo;
 import com.trainer.ticketbooking.entity.Station;
 import com.trainer.ticketbooking.entity.Train;
-import com.trainer.ticketbooking.dto.TrainDto;
+import com.trainer.ticketbooking.dto.TrainRequestDto;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -19,86 +19,87 @@ import java.util.Optional;
 @Component
 @Slf4j
 public class TrainService {
-    private final TrainDao trainDao;
+    private final TrainRepo trainRepo;
     private final StationRepo stationRepo;
+    private final TrainMapper trainMapper;
 
-
-    public TrainService(TrainDao trainDao, StationRepo stationRepo){
-        this.trainDao = trainDao;
+    public TrainService(TrainRepo trainRepo, StationRepo stationRepo, TrainMapper trainMapper){
+        this.trainRepo = trainRepo;
         this.stationRepo = stationRepo;
+        this.trainMapper = trainMapper;
     }
 
     //create train and put it in db
-    public Train createTrain(TrainDto trainDto) {
+    public TrainResponseDto createTrain(TrainRequestDto trainRequestDto) {
 
         //Do not accept trains that have the same departure and arrival stations
-        if(trainDto.getDepartureStationID() == trainDto.getArrivalStationID()){
+        if(trainRequestDto.getDepartureStationID() == trainRequestDto.getArrivalStationID()){
             throw new IllegalArgumentException("Departure station and arrival station " +
                     "cannot reference the same station.");
         }
 
         Train newTrain = new Train();
-        Optional<Station> departureStation = stationRepo.findByStationID(trainDto.getDepartureStationID());
-        Optional<Station> arrivalStation = stationRepo.findByStationID(trainDto.getArrivalStationID());
+        Optional<Station> departureStation = stationRepo.findByStationID(trainRequestDto.getDepartureStationID());
+        Optional<Station> arrivalStation = stationRepo.findByStationID(trainRequestDto.getArrivalStationID());
 
         //if either station does not exist, we throw an exception
         if(departureStation.isPresent()){
             newTrain.setDepartureStation(departureStation.get());
         }else{
             throw new NullPointerException
-                    ("Station with ID \"" + trainDto.getDepartureStationID() + "\" does not exist.");
+                    ("Station with ID \"" + trainRequestDto.getDepartureStationID() + "\" does not exist.");
         }
 
         if(arrivalStation.isPresent()){
             newTrain.setArrivalStation(arrivalStation.get());
         }else{
             throw new NullPointerException
-                    ("Station with ID \"" + trainDto.getArrivalStationID() + "\" does not exist.");
+                    ("Station with ID \"" + trainRequestDto.getArrivalStationID() + "\" does not exist.");
         }
 
-        trainDao.save(newTrain);
-        return newTrain;
+        trainRepo.save(newTrain);
+        return trainMapper.trainToDto(newTrain);
     }
 
     //get train from db
-    public Train getTrain(Long trainID) throws EntityNotFoundException {
-        Optional<Train> train = trainDao.findByTrainID(trainID);
+    public TrainResponseDto getTrain(Long trainID) throws EntityNotFoundException {
+        Optional<Train> train = trainRepo.findByTrainID(trainID);
 
         if(train.isEmpty()){
             throw new NullPointerException("Train with ID \"" + trainID + "\" does not exist.");
         }
 
-        return train.get();
+        return trainMapper.trainToDto(train.get());
     }
 
     //update train in db
-    public Train updateTrain(long trainID, TrainDto trainDto) {
-        Optional<Train> train = trainDao.findByTrainID(trainID);
+    public TrainResponseDto updateTrain(long trainID, TrainRequestDto trainRequestDto) {
+        Optional<Train> optionalTrain = trainRepo.findByTrainID(trainID);
 
-        if(train.isEmpty()){
+        if(optionalTrain.isEmpty()){
             throw new NullPointerException("Train with ID \"" + trainID + "\" does not exist.");
         }
 
-        Train trainEntity = train.get();
+        Train train = optionalTrain.get();
 
         //Set the departure station
-        Optional<Station> departureStation = stationRepo.findByStationID(trainDto.getDepartureStationID());
+        Optional<Station> departureStation = stationRepo.findByStationID(trainRequestDto.getDepartureStationID());
 
         if(departureStation.isPresent()){
-            trainEntity.setDepartureStation(departureStation.get());
+            train.setDepartureStation(departureStation.get());
         }else{
             throw new NullPointerException
-                    ("Station with ID \"" + trainDto.getDepartureStationID() + "\" does not exist.");
+                    ("Station with ID \"" + trainRequestDto.getDepartureStationID() + "\" does not exist.");
         }
 
         //Set the arrival station
-        Optional<Station> arrivalStation = stationRepo.findByStationID(trainDto.getArrivalStationID());
+        Optional<Station> arrivalStation = stationRepo.findByStationID(trainRequestDto.getArrivalStationID());
 
         if(arrivalStation.isPresent()){
-            trainEntity.setArrivalStation(arrivalStation.get());
+            train.setArrivalStation(arrivalStation.get());
         }else{
             throw new NullPointerException
-                    ("Station with ID \"" + trainDto.getArrivalStationID() + "\" does not exist.");
+                    ("Station with ID \"" + trainRequestDto.getArrivalStationID() + "\" does not exist.");
         }
 
         //Ensure departure ID != arrival ID
@@ -107,18 +108,18 @@ public class TrainService {
                     "cannot reference the same station.");
         }
 
-        trainDao.save(trainEntity);
-        return trainEntity;
+        trainRepo.save(train);
+        return trainMapper.trainToDto(train);
     }
 
     //delete train from db
     public void deleteTrain(Long trainID) throws EntityNotFoundException {
-        Optional<Train> train = trainDao.findByTrainID(trainID);
+        Optional<Train> train = trainRepo.findByTrainID(trainID);
 
         if(train.isEmpty()){
             throw new NullPointerException("Train with ID \"" + trainID + "\" does not exist.");
         }
 
-        trainDao.delete(train.get());
+        trainRepo.delete(train.get());
     }
 }

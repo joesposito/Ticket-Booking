@@ -1,12 +1,12 @@
 package com.trainer.ticketbooking.controller;
 
+import com.trainer.ticketbooking.dto.TrainResponseDto;
 import com.trainer.ticketbooking.entity.Train;
-import com.trainer.ticketbooking.dto.TrainDto;
+import com.trainer.ticketbooking.dto.TrainRequestDto;
 import com.trainer.ticketbooking.service.TrainService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,10 +20,11 @@ public class TrainController {
 
     //Creates train object using request body
     @PostMapping("/train")
-    public void createTrain(@RequestBody TrainDto trainDto){
+    public ResponseEntity<TrainResponseDto> createTrain(@RequestBody TrainRequestDto trainRequestDto){
         try {
-            Train newTrain = trainService.createTrain(trainDto);
-            log.info("New station registered with ID: {}", newTrain.getTrainID());
+            TrainResponseDto trainResponseDto = trainService.createTrain(trainRequestDto);
+            log.info("New station registered with ID: {}", trainResponseDto.getTrainID());
+            return new ResponseEntity<>(trainResponseDto, HttpStatus.CREATED);
         }catch(IllegalArgumentException | NullPointerException e){
             log.error(String.valueOf(e));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -32,11 +33,11 @@ public class TrainController {
 
     //Deletes train object using a train ID in the request path
     @GetMapping("train/{trainID}")
-    public Train getTrain(@PathVariable long trainID){
+    public ResponseEntity<TrainResponseDto> getTrain(@PathVariable long trainID){
         try {
-            Train train = trainService.getTrain(trainID);
+            TrainResponseDto trainResponseDto = trainService.getTrain(trainID);
             log.info("Train successfully retrieved with ID: {}", trainID);
-            return train;
+            return new ResponseEntity<>(trainResponseDto, HttpStatus.OK);
         }catch(NullPointerException e){
             log.error(String.valueOf(e));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -44,10 +45,11 @@ public class TrainController {
     }
 
     @PatchMapping("/train/{trainID}")
-    public void updateTrain(@PathVariable long trainID, @RequestBody TrainDto trainDto){
+    public ResponseEntity<TrainResponseDto> updateTrain(@PathVariable long trainID, @RequestBody TrainRequestDto trainRequestDto){
         try {
-            trainService.updateTrain(trainID, trainDto);
+            TrainResponseDto trainResponseDto = trainService.updateTrain(trainID, trainRequestDto);
             log.info("Train successfully updated with ID: {}", trainID);
+            return new ResponseEntity<>(trainResponseDto, HttpStatus.CREATED);
         }catch(IllegalArgumentException | NullPointerException e){
             log.error(String.valueOf(e));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);

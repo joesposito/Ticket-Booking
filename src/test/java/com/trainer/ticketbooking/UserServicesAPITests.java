@@ -1,6 +1,7 @@
 package com.trainer.ticketbooking;
 
-import com.trainer.ticketbooking.dto.LocalUserDto;
+import com.trainer.ticketbooking.dto.LocalUserRequestDto;
+import com.trainer.ticketbooking.dto.LocalUserResponseDto;
 import com.trainer.ticketbooking.entity.LocalUser;
 import com.trainer.ticketbooking.mapper.AddressMapper;
 import com.trainer.ticketbooking.mapper.LocalUserMapper;
@@ -8,7 +9,6 @@ import com.trainer.ticketbooking.repo.AddressRepo;
 import com.trainer.ticketbooking.repo.LocalUserRepo;
 import com.trainer.ticketbooking.service.AddressService;
 import com.trainer.ticketbooking.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
@@ -16,9 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,27 +39,27 @@ public class UserServicesAPITests {
 
     @Test
     public void createUser200Test() {
-        LocalUserDto localUserDto = new LocalUserDto();
-        localUserDto.setUsername("Username");
-        localUserDto.setPassword("Password");
-        localUserDto.setFirstName("FName");
-        localUserDto.setLastName("LName");
-        localUserDto.setAddressLine1("Address1");
-        localUserDto.setAddressLine2("Address2");
-        localUserDto.setCity("City");
-        localUserDto.setCountry("Country");
-        localUserDto.setPostalCode("12345");
+        LocalUserRequestDto localUserRequestDto = new LocalUserRequestDto();
+        localUserRequestDto.setUsername("Username");
+        localUserRequestDto.setPassword("Password");
+        localUserRequestDto.setFirstName("FName");
+        localUserRequestDto.setLastName("LName");
+        localUserRequestDto.setAddressLine1("Address1");
+        localUserRequestDto.setAddressLine2("Address2");
+        localUserRequestDto.setCity("City");
+        localUserRequestDto.setCountry("Country");
+        localUserRequestDto.setPostalCode("12345");
 
-        System.out.println(localUserDto);
+        System.out.println(localUserRequestDto);
 
-        LocalUser localUser = userService.createUser(localUserDto);
+        LocalUserResponseDto localUserResponseDto = userService.createUser(localUserRequestDto);
 
-        System.out.println(localUser);
+        System.out.println(localUserResponseDto);
 
-        assertEquals(localUserDto.getUsername(), localUser.getUsername());
-        assertEquals(localUserDto.getPassword(), localUser.getPassword());
-        assertEquals(localUserDto.getFirstName(), localUser.getFirstName());
-        assertEquals(localUserDto.getLastName(), localUser.getLastName());
+        assertEquals(localUserRequestDto.getUsername(), localUserResponseDto.getUsername());
+        assertEquals(localUserRequestDto.getPassword(), localUserResponseDto.getPassword());
+        assertEquals(localUserRequestDto.getFirstName(), localUserResponseDto.getFirstName());
+        assertEquals(localUserRequestDto.getLastName(), localUserResponseDto.getLastName());
         //TODO - Get addressService unit testing mock working so I can test rest of service.
         /*assertEquals(localUserDto.getAddressLine1(), localUser.getAddress().getAddressLine1());
         assertEquals(localUserDto.getAddressLine2(), localUser.getAddress().getAddressLine2());

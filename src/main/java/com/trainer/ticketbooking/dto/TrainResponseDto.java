@@ -1,19 +1,20 @@
 package com.trainer.ticketbooking.dto;
 
-import com.trainer.ticketbooking.entity.Station;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
-public class TrainDto {
+@Getter
+public class TrainResponseDto {
+    private long trainID;
     private long departureStationID;
     private long arrivalStationID;
 
     @Override
     public String toString() {
-        return "TrainDto{" +
-                "departureStationID=" + departureStationID +
+        return "TrainResponseDto{" +
+                "trainID=" + trainID +
+                ", departureStationID=" + departureStationID +
                 ", arrivalStationID=" + arrivalStationID +
                 '}';
     }

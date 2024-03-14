@@ -6,6 +6,7 @@
 
     <persistence-unit name="persistenceUnit" transaction-type="RESOURCE_LOCAL">
         <class>com.trainer.ticketbooking.entity.LocalUser</class>
+        <class>com.trainer.ticketbooking.entity.Booking</class>
 
         <!-- Database connection information -->
         <properties>

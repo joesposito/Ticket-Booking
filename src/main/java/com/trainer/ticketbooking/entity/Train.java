@@ -1,5 +1,6 @@
 package com.trainer.ticketbooking.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.List;
 @Table(name = "train")
 public class Train {
     @Id
+    @JsonBackReference
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "train_id", nullable = false)
     private Long trainID;
