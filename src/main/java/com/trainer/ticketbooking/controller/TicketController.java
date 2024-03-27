@@ -21,7 +21,8 @@ public class TicketController {
     }
 
     @PostMapping("/ticket/{quantity}")
-    public ResponseEntity<List<TicketResponseDto>> createTicket(@PathVariable int quantity, @RequestBody TicketRequestDto ticketRequestDto){
+    public ResponseEntity<List<TicketResponseDto>> createTicket(@PathVariable int quantity,
+                                                                @RequestBody TicketRequestDto ticketRequestDto){
         try {
             ArrayList<TicketResponseDto> tickets = new ArrayList<>(quantity);
 
@@ -43,6 +44,18 @@ public class TicketController {
             TicketResponseDto newTicketRequestDto = ticketService.getTicket(ticketID);
             log.info("Ticket successfully retrieved with ID: {}", ticketID);
             return new ResponseEntity<>(newTicketRequestDto, HttpStatus.OK);
+        }catch(NullPointerException e){
+            log.error(String.valueOf(e));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/tickets/{trainID}")
+    public ResponseEntity<List<TicketResponseDto>> getAllTickets(@PathVariable long trainID){
+        try{
+            List<TicketResponseDto> ticketResponseDtoList = ticketService.getAllTickets(trainID);
+            log.info("Ticket(s) successfully retrieved.");
+            return new ResponseEntity<>(ticketResponseDtoList, HttpStatus.OK);
         }catch(NullPointerException e){
             log.error(String.valueOf(e));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);

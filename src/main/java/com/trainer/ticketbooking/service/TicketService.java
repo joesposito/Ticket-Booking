@@ -6,11 +6,14 @@ import com.trainer.ticketbooking.entity.Train;
 import com.trainer.ticketbooking.entity.enums.SeatClass;
 import com.trainer.ticketbooking.entity.Ticket;
 import com.trainer.ticketbooking.mapper.TicketMapper;
+import com.trainer.ticketbooking.repo.StationRepo;
 import com.trainer.ticketbooking.repo.TicketRepo;
 import com.trainer.ticketbooking.repo.TrainRepo;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,11 +22,14 @@ public class TicketService {
     private final TicketRepo ticketRepo;
     private final TicketMapper ticketMapper;
     private final TrainRepo trainRepo;
+    private final StationRepo stationRepo;
 
-    public TicketService(TicketRepo ticketRepo, TicketMapper ticketMapper, TrainRepo trainRepo){
+    public TicketService(TicketRepo ticketRepo, TicketMapper ticketMapper, TrainRepo trainRepo,
+                         StationRepo stationRepo){
         this.ticketRepo = ticketRepo;
         this.ticketMapper = ticketMapper;
         this.trainRepo = trainRepo;
+        this.stationRepo = stationRepo;
     }
 
     public TicketResponseDto createTicket(TicketRequestDto ticketRequestDto){
@@ -33,7 +39,7 @@ public class TicketService {
             ticket.setCost(ticketRequestDto.getCost());
 
             Optional<Train> trainOptional = trainRepo.findByTrainID(ticketRequestDto.getTrainID());
-            if(!trainOptional.isPresent()){
+            if(trainOptional.isEmpty()){
                 throw new NullPointerException("Train with ID \"" + ticketRequestDto.getTrainID() + "\" does not exist.");
             }
             ticket.setTrain(trainOptional.get());
@@ -55,6 +61,19 @@ public class TicketService {
         }
 
         return ticketMapper.ticketToDto(ticketOptional.get());
+    }
+
+    public List<TicketResponseDto> getAllTickets(long trainID){
+        Optional<Train> optionalTrain = trainRepo.findByTrainID(trainID);
+        if(optionalTrain.isEmpty()){
+            throw new NullPointerException("Train with ID \"" + trainID + "\" does not exist.");
+        }
+
+        List<Ticket> ticketList = optionalTrain.get().getTickets();
+        List<TicketResponseDto> ticketResponseDtoList = new ArrayList<>();
+        ticketList.forEach(ticket -> ticketResponseDtoList.add(ticketMapper.ticketToDto(ticket)));
+
+        return ticketResponseDtoList;
     }
 
     public TicketResponseDto updateTicket(long ticketID, TicketRequestDto ticketRequestDto){

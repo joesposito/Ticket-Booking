@@ -1,7 +1,6 @@
 package com.trainer.ticketbooking.controller;
 
 import com.trainer.ticketbooking.dto.TrainResponseDto;
-import com.trainer.ticketbooking.entity.Train;
 import com.trainer.ticketbooking.dto.TrainRequestDto;
 import com.trainer.ticketbooking.service.TrainService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +31,7 @@ public class TrainController {
     }
 
     //Deletes train object using a train ID in the request path
-    @GetMapping("train/{trainID}")
+    @GetMapping("/train/{trainID}")
     public ResponseEntity<TrainResponseDto> getTrain(@PathVariable long trainID){
         try {
             TrainResponseDto trainResponseDto = trainService.getTrain(trainID);

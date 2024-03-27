@@ -22,21 +22,27 @@ public class UserService {
     private final AddressMapper addressMapper;
     private final LocalUserRepo localUserRepo;
     private final AddressRepo addressRepo;
+    private final EmailService emailService;
 
     public UserService(AddressService addressService, LocalUserRepo localUserRepo, AddressRepo addressRepo,
-                       AddressMapper addressMapper, LocalUserMapper localUserMapper){
+                       AddressMapper addressMapper, LocalUserMapper localUserMapper, EmailService emailService){
         this.addressService = addressService;
         this.localUserRepo = localUserRepo;
         this.addressRepo = addressRepo;
         this.addressMapper = addressMapper;
         this.localUserMapper = localUserMapper;
+        this.emailService = emailService;
     }
 
     //create user and put it in db
     public LocalUserResponseDto createUser(LocalUserRequestDto localUserRequestDto) {
+        //check to see if email exists or is invalid before proceeding
         if(localUserRepo.findByUsernameIgnoreCase(localUserRequestDto.getUsername()).isPresent()) {
             throw new IllegalArgumentException
                     ("User with username \"" + localUserRequestDto.getUsername() + "\" already exists.");
+        }else if(!emailService.emailIsValid(localUserRequestDto.getUsername())){
+            throw new IllegalArgumentException
+                    ("User with email \"" + localUserRequestDto.getUsername() + "\" is invalid.");
         }
 
         //address service will throw NPE is any data is missing

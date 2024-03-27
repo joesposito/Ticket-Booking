@@ -2,9 +2,6 @@ package com.trainer.ticketbooking.controller;
 
 import com.trainer.ticketbooking.dto.StationRequestDto;
 import com.trainer.ticketbooking.dto.StationResponseDto;
-import com.trainer.ticketbooking.dto.TicketRequestDto;
-import com.trainer.ticketbooking.dto.TicketResponseDto;
-import com.trainer.ticketbooking.entity.Station;
 import com.trainer.ticketbooking.service.StationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
